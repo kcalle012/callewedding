@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({ path: require('path').resolve(__dirname, '../.env') });
 const express = require('express');
 const bodyParser = require('body-parser');
 const Busboy = require('busboy');
@@ -8,11 +8,20 @@ const path = require('path');
 const cors = require('cors');
 
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5002;
 const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:3000';
 
 // Enable CORS for communication with the frontend
-app.use(cors({ origin: CORS_ORIGIN }));
+// In development, allow any localhost origin to avoid port-mismatch issues
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || origin === CORS_ORIGIN || /^http:\/\/localhost(:\d+)?$/.test(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS: origin ${origin} not allowed`));
+    }
+  },
+}));
 app.use(bodyParser.json()); // Parse JSON body for blessings
 
 // Validate required environment variables
@@ -159,6 +168,77 @@ app.post('/submit-blessing', async (req, res) => {
   } catch (error) {
     console.error('Error submitting blessing:', error.message);
     res.status(500).json({ success: false, message: 'Failed to submit blessing.' });
+  }
+});
+
+// ============================================================
+// RSVP — Guest list lookup
+// Sheet "GuestList" columns: A=Email, B=Names (comma-separated)
+// e.g.  john@doe.com  |  John Doe, Jane Doe
+// ============================================================
+app.get('/rsvp/lookup', async (req, res) => {
+  const email = (req.query.email || '').trim().toLowerCase();
+  if (!email) {
+    return res.status(400).json({ success: false, message: 'Email is required.' });
+  }
+
+  try {
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: 'GuestList!A:B',
+    });
+
+    const rows = response.data.values || [];
+    const match = rows.find(
+      (row) => row[0] && row[0].trim().toLowerCase() === email
+    );
+
+    if (!match) {
+      return res.status(404).json({ success: false, message: 'Email not found on the guest list.' });
+    }
+
+    const names = (match[1] || '')
+      .split(',')
+      .map((n) => n.trim())
+      .filter(Boolean);
+
+    return res.json({ success: true, names });
+  } catch (error) {
+    console.error('Error looking up guest:', error.message);
+    return res.status(500).json({ success: false, message: 'Failed to look up guest.' });
+  }
+});
+
+// ============================================================
+// RSVP — Submit attendance
+// Writes to sheet "RSVPs": Timestamp | Email | Attending | Declined
+// ============================================================
+app.post('/rsvp/submit', async (req, res) => {
+  const { email, attending, declined } = req.body;
+
+  if (!email || !Array.isArray(attending) || !Array.isArray(declined)) {
+    return res.status(400).json({ success: false, message: 'Invalid payload.' });
+  }
+
+  try {
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: SPREADSHEET_ID,
+      range: 'RSVPs!A1',
+      valueInputOption: 'USER_ENTERED',
+      requestBody: {
+        values: [[
+          new Date().toLocaleString(),
+          email,
+          attending.join(', '),
+          declined.join(', '),
+        ]],
+      },
+    });
+
+    return res.json({ success: true, message: 'RSVP submitted successfully!' });
+  } catch (error) {
+    console.error('Error submitting RSVP:', error.message);
+    return res.status(500).json({ success: false, message: 'Failed to submit RSVP.' });
   }
 });
 

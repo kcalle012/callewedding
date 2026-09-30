@@ -18,7 +18,7 @@ const siteConfig = {
   // ============================================
   // Options: "hindu", "christian", "custom"
   // This determines which event presets are available
-  weddingType: "hindu", // Change to "christian" or "custom" as needed
+  weddingType: "custom", // Change to "christian" or "custom" as needed
 
   // ============================================
   // FEATURE FLAGS - Enable/disable features
@@ -44,15 +44,7 @@ const siteConfig = {
   // Pre-built event templates based on wedding type
   // Use these as reference or copy to events array below
   eventPresets: {
-    hindu: [
-      { name: "Engagement", description: "Ring ceremony and engagement celebration", dressCode: "Semi-formal" },
-      { name: "Haldi", description: "Turmeric ceremony - traditional pre-wedding ritual", dressCode: "Traditional (yellow/white)" },
-      { name: "Mehndi", description: "Henna ceremony - intricate designs and celebration", dressCode: "Traditional (bright colors)" },
-      { name: "Sangeet", description: "Music and dance night with family and friends", dressCode: "Traditional or Semi-formal" },
-      { name: "Baraat", description: "Groom's procession - grand entrance celebration", dressCode: "Traditional" },
-      { name: "Vidhi", description: "Wedding rituals and ceremonies", dressCode: "Traditional" },
-      { name: "Reception", description: "Wedding reception celebration", dressCode: "Formal" },
-    ],
+    
     christian: [
       { name: "Rehearsal Dinner", description: "Pre-wedding dinner with close family and friends", dressCode: "Semi-formal" },
       { name: "Wedding Ceremony", description: "Church ceremony - join us as we say 'I do'", dressCode: "Formal" },
@@ -60,14 +52,17 @@ const siteConfig = {
       { name: "Reception", description: "Wedding reception with dinner and dancing", dressCode: "Formal" },
       { name: "After Party", description: "Late night celebration", dressCode: "Casual" },
     ],
-    custom: [], // User defines their own events
+    custom: [
+      { name: "Mass", description: "Mass will happen at 3:00pm at St. Peter's Roman Catholic Church in Belleville, NJ", dressCode: "Formal" },
+      { name: "Reception", description: "Reception will take place at Il Villagio at 6:00pm", dressCode: "Fornal"}
+    ], // User defines their own events
   },
 
   // Couple Information
   couple: {
-    name1: "Partner 1",
-    name2: "Partner 2",
-    displayName: "Partner 1 & Partner 2", // Used in navbar and footer
+    name1: "Kevin Calle",
+    name2: "Gabriela Herrera",
+    displayName: "Kevin and Gabriela Calle", // Used in navbar and footer
     name1Image: "/images/partner1.svg", // Path to partner 1's photo (replace with your image)
     name2Image: "/images/partner2.svg", // Path to partner 2's photo (replace with your image)
   },
@@ -152,14 +147,13 @@ const siteConfig = {
     events: [
       {
         id: 1,
-        name: "Engagement & Seemanth Puja",
-        date: "2025-02-22",
-        time: "12:00 PM",
-        venue: "Venue Name, City",
-        mapEmbed: "https://www.google.com/maps/embed?pb=YOUR_MAP_EMBED_URL",
+        name: "Wedding Mass",
+        date: "2027-06-19",
+        time: "3:00 PM",
+        venue: "St. Peter's Roman Catholic Church, Belleville, NJ.",
+        mapEmbed: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3020.967421347689!2d-74.15939902319016!3d40.78473037138279!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c255b18fcb9b8b%3A0xf757c35e25d257f7!2sSt.%20Peter's%20Roman%20Catholic%20Church!5e0!3m2!1sen!2sus!4v1790794849929!5m2!1sen!2sus",
         dressCode: "Semi-formal", // Optional
-        description: "Join us for our engagement ceremony", // Optional
-        category: "pre-wedding", // Optional: for filtering
+        description: "Join us for our ", // Optional
       },
       {
         id: 2,
@@ -185,7 +179,7 @@ const siteConfig = {
       },
       {
         id: 4,
-        name: "Mangalashtaka",
+        name: "Reception",
         date: "2025-02-23",
         time: "10:30 AM",
         venue: "Venue Name, City",

@@ -9,14 +9,15 @@
   }
   
   body {
-    @apply bg-apple-gray-50 text-apple-gray-900 font-sans;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-      sans-serif;
+    @apply bg-apple-gray-50 text-apple-gray-900;
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    @apply font-semibold tracking-wide;
+    letter-spacing: 0.01em;
   }
 }
 
