@@ -141,32 +141,26 @@ function PhotoGallery() {
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                   loading="lazy"
                   onError={(e) => {
-                    // Fallback to direct URL if thumbnail fails
                     if (photo.thumbnailUrl && photo.thumbnailUrl !== photo.url) {
                       e.target.src = photo.url;
                     }
                   }}
                 />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                  <svg
-                    className="w-12 h-12 text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
-                    />
-                  </svg>
+                {/* Caption overlay on hover */}
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors flex flex-col items-center justify-end pb-3 px-2">
+                  {photo.caption && (
+                    <p className="text-white text-xs text-center opacity-0 group-hover:opacity-100 transition-opacity line-clamp-2"
+                      style={{ fontFamily: "'EB Garamond', Georgia, serif", fontSize: '0.8rem' }}>
+                      {photo.caption}
+                    </p>
+                  )}
+                  {photo.uploaderName && (
+                    <p className="text-white/70 text-xs text-center opacity-0 group-hover:opacity-100 transition-opacity mt-0.5"
+                      style={{ fontFamily: "'EB Garamond', Georgia, serif", letterSpacing: '0.06em' }}>
+                      — {photo.uploaderName}
+                    </p>
+                  )}
                 </div>
-                {photo.category === 'uploaded' && (
-                  <div className="absolute top-2 right-2 bg-apple-blue-500 text-white text-xs px-2 py-1 rounded-full">
-                    New
-                  </div>
-                )}
               </div>
             ))}
           </div>
@@ -200,7 +194,16 @@ function PhotoGallery() {
                 }}
               />
               {selectedPhoto.caption && (
-                <p className="text-apple-gray-700 text-center mb-2">{selectedPhoto.caption}</p>
+                <p className="text-gray-700 text-center mb-1"
+                  style={{ fontFamily: "'EB Garamond', Georgia, serif", fontSize: '1rem' }}>
+                  {selectedPhoto.caption}
+                </p>
+              )}
+              {selectedPhoto.uploaderName && (
+                <p className="text-gray-400 text-sm text-center mb-1"
+                  style={{ fontFamily: "'EB Garamond', Georgia, serif", letterSpacing: '0.06em' }}>
+                  — {selectedPhoto.uploaderName}
+                </p>
               )}
               {selectedPhoto.date && (
                 <p className="text-apple-gray-500 text-sm text-center mb-4">

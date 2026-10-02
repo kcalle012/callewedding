@@ -48,8 +48,8 @@ export async function handler(event) {
     // List all files in the folder
     const response = await drive.files.list({
       q: `'${FOLDER_ID}' in parents and mimeType contains 'image/' and trashed=false`,
-      fields: 'files(id, name, mimeType, createdTime, modifiedTime, webViewLink, thumbnailLink)',
-      orderBy: 'createdTime desc', // Newest first
+      fields: 'files(id, name, mimeType, createdTime, modifiedTime, webViewLink, thumbnailLink, description)',
+      orderBy: 'createdTime desc',
     });
 
     const files = response.data.files || [];
@@ -72,10 +72,11 @@ export async function handler(event) {
       return {
         id: file.id,
         name: file.name,
-        url: viewUrl, // Primary view URL
-        thumbnailUrl: thumbnailUrl, // Thumbnail for grid view
-        downloadUrl: downloadUrl, // Download URL (fallback)
-        caption: file.name,
+        url: viewUrl,
+        thumbnailUrl: thumbnailUrl,
+        downloadUrl: downloadUrl,
+        caption: file.description || '',
+        uploaderName: file.description ? file.description.split('||')[1] || '' : '',
         date: file.createdTime || file.modifiedTime,
         category: 'uploaded',
       };

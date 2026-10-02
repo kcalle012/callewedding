@@ -71,6 +71,11 @@ export async function handler(event) {
 
       bb.on('finish', async () => {
         try {
+          // Attach captions to each file by index
+          let captions = [];
+          try { captions = JSON.parse(fields.captions || '[]'); } catch (_) {}
+          files.forEach((f, i) => { f.caption = captions[i] || ''; });
+
           const payload = {
             uploaderName: fields.uploaderName || 'Anonymous',
             files,

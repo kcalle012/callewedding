@@ -7,6 +7,7 @@ import Button from './ui/Button';
 function UploadPhotos() {
   const [files, setFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
+  const [captions, setCaptions] = useState([]);
   const [uploaderName, setUploaderName] = useState('');
   const [message, setMessage] = useState('');
   const [uploading, setUploading] = useState(false);
@@ -33,8 +34,9 @@ function UploadPhotos() {
       return true;
     });
 
-    setFiles([...files, ...validFiles]);
-    
+    setFiles((prev) => [...prev, ...validFiles]);
+    setCaptions((prev) => [...prev, ...validFiles.map(() => '')]);
+
     // Create previews
     validFiles.forEach((file) => {
       const reader = new FileReader();
@@ -83,6 +85,11 @@ function UploadPhotos() {
   const removeFile = (index) => {
     setFiles(files.filter((_, i) => i !== index));
     setPreviews(previews.filter((_, i) => i !== index));
+    setCaptions(captions.filter((_, i) => i !== index));
+  };
+
+  const updateCaption = (index, value) => {
+    setCaptions((prev) => prev.map((c, i) => (i === index ? value : c)));
   };
 
   // Simulate upload progress
@@ -115,6 +122,7 @@ function UploadPhotos() {
     setMessage('');
     const formData = new FormData();
     formData.append('uploaderName', uploaderName.trim());
+    formData.append('captions', JSON.stringify(captions));
     files.forEach((file) => formData.append('images', file));
 
     try {
@@ -235,7 +243,15 @@ function UploadPhotos() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
-                  <p className="p-2 text-xs text-apple-gray-600 truncate">{preview.file.name}</p>
+                  <input
+                    type="text"
+                    value={captions[index] || ''}
+                    onChange={(e) => updateCaption(index, e.target.value)}
+                    placeholder="Add a caption…"
+                    className="w-full px-2 py-1.5 text-xs text-gray-700 border-t border-gray-100 focus:outline-none focus:bg-gray-50"
+                    style={{ fontFamily: "'EB Garamond', Georgia, serif" }}
+                    disabled={uploading}
+                  />
                 </Card>
               ))}
             </div>
