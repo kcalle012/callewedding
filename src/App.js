@@ -1,5 +1,5 @@
-import React, { lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { lazy, Suspense, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import siteConfig from './siteConfig';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -16,6 +16,13 @@ const Registry = lazy(() => import('./components/Registry'));
 const Travel = lazy(() => import('./components/Travel'));
 const FAQ = lazy(() => import('./components/FAQ'));
 const Timeline = lazy(() => import('./components/Timeline'));
+
+// Scroll to top on every route change
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  return null;
+}
 
 // Loading component
 const Loading = () => (
@@ -69,6 +76,7 @@ function App() {
   return (
     <Router>
       <div className="App flex flex-col min-h-screen bg-apple-gray-50">
+        <ScrollToTop />
         <Navbar />
         <div className="flex-grow">
           <Routes>

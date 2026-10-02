@@ -138,11 +138,11 @@ function UploadPhotos() {
   };
 
   return (
-    <div className="min-h-screen bg-apple-gray-50 pt-24 pb-20">
+    <div className="min-h-screen bg-white pt-24 pb-20">
       <div className="section-container">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl sm:text-title font-semibold text-apple-gray-900 mb-4">
+          <h1 className="page-header-title">
             {siteConfig.uploadPhotos?.title || 'Upload Your Photos'}
           </h1>
           <p className="text-lg text-apple-gray-600 max-w-2xl mx-auto">

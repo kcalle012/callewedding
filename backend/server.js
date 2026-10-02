@@ -211,7 +211,8 @@ app.get('/rsvp/lookup', async (req, res) => {
 
 // ============================================================
 // RSVP — Submit attendance
-// Writes to sheet "RSVPs": Timestamp | Email | Attending | Declined
+// Upserts sheet "RSVPs": Timestamp | Email | Attending | Declined
+// If a row for this email already exists, it is overwritten.
 // ============================================================
 app.post('/rsvp/submit', async (req, res) => {
   const { email, attending, declined } = req.body;
@@ -221,19 +222,43 @@ app.post('/rsvp/submit', async (req, res) => {
   }
 
   try {
-    await sheets.spreadsheets.values.append({
+    // Read all existing rows to find if this email already has an entry
+    const existing = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: 'RSVPs!A1',
-      valueInputOption: 'USER_ENTERED',
-      requestBody: {
-        values: [[
-          new Date().toLocaleString(),
-          email,
-          attending.join(', '),
-          declined.join(', '),
-        ]],
-      },
+      range: 'RSVPs!A:D',
     });
+
+    const rows = existing.data.values || [];
+    // Row index in the sheet (1-based); row 1 is the header
+    const existingRowIndex = rows.findIndex(
+      (row) => row[1] && row[1].trim().toLowerCase() === email.trim().toLowerCase()
+    );
+
+    const newRow = [
+      new Date().toLocaleString(),
+      email,
+      attending.join(', '),
+      declined.join(', '),
+    ];
+
+    if (existingRowIndex !== -1) {
+      // Overwrite the existing row (existingRowIndex is 0-based; sheet rows are 1-based)
+      const sheetRow = existingRowIndex + 1;
+      await sheets.spreadsheets.values.update({
+        spreadsheetId: SPREADSHEET_ID,
+        range: `RSVPs!A${sheetRow}:D${sheetRow}`,
+        valueInputOption: 'USER_ENTERED',
+        requestBody: { values: [newRow] },
+      });
+    } else {
+      // No existing entry — append a new row
+      await sheets.spreadsheets.values.append({
+        spreadsheetId: SPREADSHEET_ID,
+        range: 'RSVPs!A:D',
+        valueInputOption: 'USER_ENTERED',
+        requestBody: { values: [newRow] },
+      });
+    }
 
     return res.json({ success: true, message: 'RSVP submitted successfully!' });
   } catch (error) {

@@ -189,7 +189,7 @@ function EventPage() {
 
   // ── Render ────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-apple-gray-50 pt-24 pb-20">
+    <div className="min-h-screen bg-white pt-24 pb-20">
       <div className="section-container">
 
         {/* Title */}

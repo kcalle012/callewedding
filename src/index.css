@@ -21,6 +21,48 @@
   }
 }
 
+/* ── Wedding theme shared styles ── */
+@layer components {
+  /* Page wrapper */
+  .page-wrapper {
+    @apply min-h-screen bg-white pt-24 pb-20;
+  }
+
+  /* Page header block */
+  .page-header {
+    @apply text-center mb-14;
+  }
+  .page-header-eyebrow {
+    font-family: 'EB Garamond', Georgia, serif;
+    @apply text-gray-400 tracking-widest uppercase text-xs mb-3;
+    letter-spacing: 0.25em;
+  }
+  .page-header-title {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    @apply text-gray-800 font-normal italic;
+    font-size: clamp(2rem, 4vw, 3rem);
+  }
+  .page-header-subtitle {
+    font-family: 'EB Garamond', Georgia, serif;
+    @apply text-gray-500 mt-3 max-w-2xl mx-auto text-lg;
+  }
+  .page-divider {
+    @apply mx-auto mt-4 w-10 border-t border-gray-300;
+  }
+
+  /* Section heading (h2 inside a page) */
+  .section-heading {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    @apply text-gray-800 font-normal italic text-center mb-10;
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+  }
+
+  /* Wedding card — replaces card-apple */
+  .card-wedding {
+    @apply bg-white border border-gray-100 hover:border-gray-300 transition-all duration-300 hover:shadow-md;
+  }
+}
+
 /* Custom component styles */
 @layer components {
   /* Apple-style button */

@@ -69,8 +69,8 @@ const siteConfig = {
 
   // Wedding Date (for countdown timer)
   wedding: {
-    date: "2025-02-22T12:00:00", // ISO format date/time
-    location: "City, Country",
+    date: "2027-06-19T15:00:00", // ISO format date/time
+    location: "Belleville, NJ",
   },
 
   // Homepage
@@ -78,7 +78,7 @@ const siteConfig = {
     title: "Welcome to Our Wedding Website!",
     subtitle: "We're so excited to share our special day with you. Capture and share your favorite moments from our wedding here!",
     ctaButton: "Upload Photos",
-    backgroundImage: "/images/homage_page_background.png",
+    backgroundImage: "/_DS21059.jpeg",
     showCountdown: true,
   },
 

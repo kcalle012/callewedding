@@ -8,20 +8,14 @@ function Navbar() {
   const location = useLocation();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
+  const toggleMenu = () => setIsOpen(!isOpen);
 
-  // Generate navigation links based on enabled features
   const getNavLinks = () => {
-    const links = [];
     const routes = {
       ourStory: '/our-story',
       events: '/events',
@@ -34,119 +28,101 @@ function Navbar() {
       faq: '/faq',
       timeline: '/timeline',
     };
-
-    Object.entries(siteConfig.features).forEach(([key, feature]) => {
-      if (feature.enabled && key !== 'homepage' && routes[key]) {
-        links.push({
-          path: routes[key],
-          label: feature.label,
-          key,
-        });
-      }
-    });
-
-    return links;
+    return Object.entries(siteConfig.features)
+      .filter(([key, f]) => f.enabled && key !== 'homepage' && routes[key])
+      .map(([key, f]) => ({ path: routes[key], label: f.label, key }));
   };
 
   const navLinks = getNavLinks();
   const isActive = (path) => location.pathname === path;
+  const isHome = location.pathname === '/';
 
   return (
     <nav
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
         scrolled
-          ? 'bg-white/80 backdrop-blur-apple shadow-apple'
-          : 'bg-apple-gray-900/80 backdrop-blur-apple'
+          ? 'bg-white shadow-sm'
+          : isHome
+            ? 'bg-transparent border-b border-white/30'
+            : 'bg-black/45 border-b border-white/20'
       }`}
     >
-      <div className="section-container">
-        <div className="flex justify-between items-center py-4">
-          {/* Logo or Title */}
+      <div className="max-w-7xl mx-auto px-6 lg:px-10">
+        <div className="flex justify-between items-center h-20">
+
+          {/* Couple name — cursive script */}
           <Link
             to="/"
-            className={`text-xl lg:text-2xl font-semibold tracking-wide transition-colors ${
-              scrolled ? 'text-apple-gray-900' : 'text-white'
+            className={`transition-colors mr-5 duration-300  ${
+              scrolled ? 'text-gray-800' : 'text-white'
             }`}
+            style={{
+              fontFamily: "'Cormorant Garamond', Georgia, serif",
+              fontSize: '1.25rem',
+              fontWeight: 400,
+              fontStyle: 'italic',
+              letterSpacing: '0.02em',
+              whiteSpace: 'nowrap',
+            }}
           >
-            {siteConfig.couple.displayName}
+            {siteConfig.couple.name1}
+            {' '}
+            <span style={{ fontStyle: 'normal', fontSize: '1rem' }}>♥</span>
+            {' '}
+            {siteConfig.couple.name2}
           </Link>
 
-          {/* Hamburger Icon for Mobile */}
-          <div className="lg:hidden">
-            <button
-              onClick={toggleMenu}
-              className={`focus:outline-none p-2 ${
-                scrolled ? 'text-apple-gray-900' : 'text-white'
-              }`}
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                {isOpen ? (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                ) : (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                )}
-              </svg>
-            </button>
-          </div>
-
-          {/* Links for Large Screens */}
-          <div className={`hidden lg:flex lg:items-center lg:space-x-8`}>
+          {/* Desktop links */}
+          <div className="hidden lg:flex items-center space-x-8 pr-6">
             {navLinks.map((link) => (
               <Link
                 key={link.key}
                 to={link.path}
-                className={`text-sm font-medium transition-all duration-200 px-2 py-1 ${
+                className={`text-sm tracking-widest uppercase transition-all duration-200 pb-0.5 ${
                   isActive(link.path)
                     ? scrolled
-                      ? 'text-apple-blue-600 border-b-2 border-apple-blue-600'
-                      : 'text-white border-b-2 border-white'
+                      ? 'text-gray-900 border-b border-gray-900'
+                      : 'text-white border-b border-white'
                     : scrolled
-                    ? 'text-apple-gray-600 hover:text-apple-gray-900'
+                    ? 'text-gray-500 hover:text-gray-900'
                     : 'text-white/80 hover:text-white'
                 }`}
+                style={{ fontFamily: "'EB Garamond', Georgia, serif", letterSpacing: '0.12em' }}
               >
                 {link.label}
               </Link>
             ))}
           </div>
+
+          {/* Mobile hamburger */}
+          <button
+            onClick={toggleMenu}
+            className={`lg:hidden p-2 transition-colors ${scrolled ? 'text-gray-800' : 'text-white'}`}
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {isOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile menu */}
         {isOpen && (
-          <div
-            className={`lg:hidden pb-6 space-y-4 animate-slide-up ${
-              scrolled ? 'text-apple-gray-900' : 'text-white'
-            }`}
-          >
+          <div className={`lg:hidden pb-6 space-y-1 border-t ${scrolled ? 'border-gray-100' : 'border-white/20'}`}>
             {navLinks.map((link) => (
               <Link
                 key={link.key}
                 to={link.path}
                 onClick={toggleMenu}
-                className={`block py-2 px-4 rounded-lg transition-colors ${
+                className={`block py-3 px-2 text-sm tracking-widest uppercase transition-colors ${
                   isActive(link.path)
-                    ? scrolled
-                      ? 'bg-apple-blue-50 text-apple-blue-600 font-medium'
-                      : 'bg-white/20 text-white font-medium'
-                    : scrolled
-                    ? 'hover:bg-apple-gray-100'
-                    : 'hover:bg-white/10'
+                    ? scrolled ? 'text-gray-900 font-medium' : 'text-white font-medium'
+                    : scrolled ? 'text-gray-500 hover:text-gray-900' : 'text-white/80 hover:text-white'
                 }`}
+                style={{ fontFamily: "'EB Garamond', Georgia, serif", letterSpacing: '0.12em' }}
               >
                 {link.label}
               </Link>
