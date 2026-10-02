@@ -78,14 +78,16 @@ function HomePage() {
       {/* ── Hero ── */}
       <div
         id="hero"
-        className="relative w-full h-screen bg-cover bg-center flex items-center justify-center overflow-hidden"
-        style={{ backgroundImage: `url(${siteConfig.homepage.backgroundImage})` }}
+        className="relative w-full h-screen bg-cover bg-top sm:bg-[center_top] flex items-center justify-center overflow-hidden"
+        style={{ backgroundImage: `url(${siteConfig.homepage.backgroundImage})`, backgroundPositionX: 'calc(50% - 75px)' }}
       >
         {/* Dark overlay */}
         <div className="absolute inset-0 bg-black/45" />
 
-        {/* Heart + sparkles SVG layer */}
-        <HeartOverlay />
+        {/* Heart + sparkles SVG layer — desktop only */}
+        <div className="hidden sm:block absolute inset-0">
+          <HeartOverlay />
+        </div>
 
         {/* Text content — sits inside the heart */}
         <div className="relative z-10 flex flex-col items-center justify-center text-center text-white px-4">

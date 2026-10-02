@@ -42,9 +42,11 @@ function Navbar() {
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
         scrolled
           ? 'bg-white shadow-sm'
-          : isHome
-            ? 'bg-transparent border-b border-white/30'
-            : 'bg-black/45 border-b border-white/20'
+          : isOpen
+            ? 'bg-stone-800 border-b border-white/20'
+            : isHome
+              ? 'bg-transparent border-b border-white/30'
+              : 'bg-black/45 border-b border-white/20'
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
@@ -108,28 +110,28 @@ function Navbar() {
             </svg>
           </button>
         </div>
-
-        {/* Mobile menu */}
-        {isOpen && (
-          <div className={`lg:hidden pb-6 space-y-1 border-t ${scrolled ? 'border-gray-100' : 'border-white/20'}`}>
-            {navLinks.map((link) => (
-              <Link
-                key={link.key}
-                to={link.path}
-                onClick={toggleMenu}
-                className={`block py-3 px-2 text-sm tracking-widest uppercase transition-colors ${
-                  isActive(link.path)
-                    ? scrolled ? 'text-gray-900 font-medium' : 'text-white font-medium'
-                    : scrolled ? 'text-gray-500 hover:text-gray-900' : 'text-white/80 hover:text-white'
-                }`}
-                style={{ fontFamily: "'EB Garamond', Georgia, serif", letterSpacing: '0.12em' }}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
-        )}
       </div>
+
+      {/* Mobile menu — full width */}
+      {isOpen && (
+        <div className={`lg:hidden pb-6 space-y-1 border-t px-6 ${scrolled ? 'bg-white border-gray-100' : 'bg-stone-800 border-white/20'}`}>
+          {navLinks.map((link) => (
+            <Link
+              key={link.key}
+              to={link.path}
+              onClick={toggleMenu}
+              className={`block py-3 px-2 text-sm tracking-widest uppercase transition-colors ${
+                isActive(link.path)
+                  ? scrolled ? 'text-gray-900 font-medium' : 'text-white font-medium'
+                  : scrolled ? 'text-gray-500 hover:text-gray-900' : 'text-white/80 hover:text-white'
+              }`}
+              style={{ fontFamily: "'EB Garamond', Georgia, serif", letterSpacing: '0.12em' }}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+      )}
     </nav>
   );
 }
