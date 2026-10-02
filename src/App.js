@@ -68,7 +68,7 @@ function PasswordGate({ children }) {
     }
   };
 
-  if (!unlocked) return children;
+  if (unlocked) return children;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
