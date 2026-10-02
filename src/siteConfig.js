@@ -166,35 +166,13 @@ const siteConfig = {
       },
       {
         id: 2,
-        name: "Sangeet",
-        date: "2025-02-22",
-        time: "7:00 PM",
-        venue: "Venue Name, City",
-        mapEmbed: "https://www.google.com/maps/embed?pb=YOUR_MAP_EMBED_URL",
-        dressCode: "Traditional", // Optional
-        description: "An evening of music and dance", // Optional
-        category: "pre-wedding", // Optional
-      },
-      {
-        id: 3,
-        name: "Vidhi",
-        date: "2025-02-23",
-        time: "9:00 AM",
-        venue: "Venue Name, City",
-        mapEmbed: "https://www.google.com/maps/embed?pb=YOUR_MAP_EMBED_URL",
-        dressCode: "Traditional", // Optional
-        description: "Traditional ceremony", // Optional
-        category: "wedding", // Optional
-      },
-      {
-        id: 4,
         name: "Reception",
-        date: "2025-02-23",
-        time: "10:30 AM",
-        venue: "Venue Name, City",
-        mapEmbed: "https://www.google.com/maps/embed?pb=YOUR_MAP_EMBED_URL",
+        date: "2027-06-19",
+        time: "6:00 PM",
+        venue: "Carlstadt, NJ",
+        mapEmbed: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3018.518291226249!2d-74.08599782255672!3d40.83854327137484!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c2f8f0bdce229f%3A0xb2139c4ce89a991f!2sIl%20Villaggio!5e0!3m2!1sen!2sus!4v1790981825452!5m2!1sen!2sus",
         dressCode: "Traditional", // Optional
-        description: "Main wedding ceremony", // Optional
+        description: "Main wedding reception", // Optional
         category: "wedding", // Optional
       },
     ],
