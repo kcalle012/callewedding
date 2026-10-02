@@ -33,7 +33,7 @@ const siteConfig = {
     blessings: { enabled: true, label: "Blessings" },
     weddingParty: { enabled: true, label: "Wedding Party" },
     registry: { enabled: true, label: "Registry" },
-    travel: { enabled: true, label: "Travel & Accommodation" },
+    travel: { enabled: false, label: "Travel & Accommodation" },
     faq: { enabled: true, label: "FAQ" },
     timeline: { enabled: true, label: "Timeline" },
   },
@@ -85,25 +85,34 @@ const siteConfig = {
   // Our Story Section
   ourStory: {
     partner1Story: {
-      name: "Partner 1's Story",
-      image: "/images/partner1.svg", // Replace with your photo
-      story: "Share your story here. This is where you can tell your guests about your journey, how you met, and what makes your relationship special.",
+      name: "Kevin's Story",
+      image: "/IMG_4144.jpg", // Replace with your photo
+      story: `Kevin was born in Newark, NJ and was raised mostly in Belleville.
+                His family consists of his family including his father (Juan Calle), his mother (Diana Calle),
+                his brother (Ryan Calle), and his sister (Camila Calle)`,
     },
     partner2Story: {
-      name: "Partner 2's Story",
-      image: "/images/partner2.svg", // Replace with your photo
-      story: "Share your story here. This is where you can tell your guests about your journey, how you met, and what makes your relationship special.",
-    },
+      name: "Gabriela's Story",
+      image: "/IMG_4146.jpg", // Replace with your photo
+      story: `Gabriela was born in Newark, NJ and was rasied mostly in Newarl. Her family consists of her father (Cesar Herrera),
+          her mother (Ruth Herrera), her brothers (Cesar "Jr" Herrera and Daniel Herrera), and her sister (Adriana Herrera)`,
+    },  
     howWeMet: {
       enabled: true,
       title: "How We Met",
-      story: "Share the story of how you first met. This could be at college, through friends, online, or any other special way your paths crossed.",
+      story: `Our families' history goes back to Ecuador, where both of our fathers grew up in Cuenca.
+                Since then, they both immigrated to the United States, and raised their families. It was
+                through the church that their families found each other, and since as long as we can remember
+                we have been in each others lives since elementary school.`,
     },
     proposal: {
       enabled: true,
       title: "The Proposal",
-      story: "Tell your guests about your proposal story. Where did it happen? How did it go? Share those special moments!",
-      image: "/images/photo1.svg", // Optional proposal photo
+      story: `We got engaged in November of 2025, where we went out for a day in New York City. Back at home, friends and
+          family help set up the proposal. After an amazing day of exploring the city and wrapping the day up with dinner
+          there was one more suprise! Kevin proposed, and our families joined soon after to embrace and celebrate the moment.
+          Since then we have been looking forward to doing life together.`,
+      image: "/_DS21024_Original.jpg", // Optional proposal photo
     },
     memories: {
       intro: "A few special moments from our journey together.",
@@ -239,7 +248,7 @@ const siteConfig = {
     subtitle: "Meet the amazing people standing with us",
     bridesmaids: [
       {
-        name: "Bridesmaid 1",
+        name: "Adriana Herrera",
         role: "Maid of Honor",
         image: "/images/partner1.svg", // Replace with actual photo
         bio: "Short bio about this person",
@@ -253,10 +262,10 @@ const siteConfig = {
     ],
     groomsmen: [
       {
-        name: "Groomsman 1",
+        name: "Ryan Calle",
         role: "Best Man",
         image: "/images/partner1.svg", // Replace with actual photo
-        bio: "Short bio about this person",
+        bio: "Ryan, or Santi as we call him affectionately, has a five year difference with Kevin. Growing up, they both always played soccer and music together.",
       },
       {
         name: "Groomsman 2",
@@ -275,20 +284,20 @@ const siteConfig = {
     registries: [
       {
         name: "Amazon",
-        url: "https://www.amazon.com/wedding-registry",
+        url: "https://www.amazon.com/wedding/guest-view/3ISTPJ8D94NWC",
         description: "Our Amazon registry",
       },
-      {
-        name: "Target",
-        url: "https://www.target.com/wedding-registry",
-        description: "Our Target registry",
-      },
+      //{
+      //  name: "Target",
+      //  url: "https://www.target.com/wedding-registry",
+      //  description: "Our Target registry",
+      //},
     ],
     cashFunds: [
       {
-        name: "Honeymoon Fund",
+        name: "The Newlywed Fund",
         description: "Help us create unforgettable memories",
-        url: "https://example.com/honeymoon-fund",
+        url: "https://www.zola.com/registry/kevinandgabriela2027",
       },
     ],
     thankYouMessage: "Thank you for your generous gifts!",
@@ -345,11 +354,11 @@ const siteConfig = {
     questions: [
       {
         title: "What should I wear?",
-        content: "Semi-formal attire is requested. Please avoid white.",
+        content: "Formal attire is requested. Please avoid white and blue.",
       },
       {
         title: "Can I bring a plus one?",
-        content: "Please check your invitation for plus one details.",
+        content: "Your plus ones are included in the RSVP section of this website. Simply check off which plus ones you want to bring if you have the option",
       },
       {
         title: "Will there be parking?",
@@ -372,55 +381,49 @@ const siteConfig = {
     subtitle: "Milestones in our relationship",
     showPlanningTimeline: true, // Show wedding planning milestones
     items: [
+      //{
+      //  date: "2020-01-15",
+      //  title: "First Date",
+      //  description: "Our first date at the coffee shop downtown",
+      //  image: "/images/photo1.svg", // Optional
+      //  type: "relationship", // "relationship" or "planning"
+      //},
       {
-        date: "2020-01-15",
-        title: "First Date",
-        description: "Our first date at the coffee shop downtown",
-        image: "/images/photo1.svg", // Optional
-        type: "relationship", // "relationship" or "planning"
-      },
-      {
-        date: "2020-06-20",
+        date: "2016-12-25",
         title: "Official",
         description: "We made it official!",
         type: "relationship",
       },
       {
-        date: "2021-06-20",
-        title: "Moved In Together",
-        description: "Started our life together in our first apartment",
-        type: "relationship",
-      },
-      {
-        date: "2023-12-25",
+        date: "2025-11-08",
         title: "Engagement",
-        description: "He said yes! We're getting married!",
-        image: "/images/photo2.svg", // Optional
+        description: "She said yes! We're getting married!",
+        image: "_DS21024_Original.jpg",  // Optional
         type: "relationship",
       },
     ],
     // Wedding Planning Timeline
     planningItems: [
       {
-        date: "2024-01-15",
+        date: "2026-02-01",
         title: "Started Planning",
         description: "Began our wedding planning journey",
         type: "planning",
       },
       {
-        date: "2024-03-20",
+        date: "2026-04-28",
         title: "Venue Booked",
         description: "Found and booked our dream venue",
         type: "planning",
       },
       {
-        date: "2024-06-15",
+        date: "2026-05-12",
         title: "Vendors Selected",
         description: "Photographer, caterer, and florist confirmed",
         type: "planning",
       },
       {
-        date: "2024-09-01",
+        date: "2026-10-20",
         title: "Invitations Sent",
         description: "Save the dates and invitations sent to all guests",
         type: "planning",
@@ -431,10 +434,10 @@ const siteConfig = {
   // Footer
   footer: {
     tagline: "True love is the greatest adventure. Thank you for being a part of our journey!",
-    contactEmail: "wedding@example.com", // Optional
+    contactEmail: "kcalle012@gmail.com", // Optional
     socialMedia: {
-      instagram: "https://instagram.com/yourhandle", // Optional
-      facebook: "https://facebook.com/yourpage", // Optional
+      instagram: "https://instagram.com/_kevincalle", // Optional
+      // facebook: "https://facebook.com/yourpage", // Optional
     },
   },
 
