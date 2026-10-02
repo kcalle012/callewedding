@@ -92,7 +92,7 @@ function PasswordGate({ children }) {
         </p>
         <form onSubmit={handleSubmit} className="flex flex-col items-center gap-4">
           <input
-            type="password"
+            type="text"
             value={input}
             onChange={(e) => { setInput(e.target.value); setError(false); }}
             placeholder="Enter password"
