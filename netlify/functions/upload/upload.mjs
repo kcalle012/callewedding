@@ -1,21 +1,6 @@
-import { google } from 'googleapis';
-import { createWriteStream, unlinkSync, createReadStream } from 'fs';
-import { join } from 'path';
 import busboy from 'busboy';
 
-// Google Auth setup
-const auth = new google.auth.GoogleAuth({
-  credentials: JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON),
-  scopes: ['https://www.googleapis.com/auth/drive'],
-});
-
-const drive = google.drive({ version: 'v3', auth });
-
-const FOLDER_ID = process.env.GOOGLE_DRIVE_FOLDER_ID;
-
-if (!FOLDER_ID) {
-  console.error('ERROR: GOOGLE_DRIVE_FOLDER_ID environment variable is not set');
-}
+const APPS_SCRIPT_URL = process.env.GOOGLE_APPS_SCRIPT_URL;
 
 export async function handler(event) {
   try {
@@ -38,12 +23,16 @@ export async function handler(event) {
       };
     }
 
-    console.log('Processing file upload...');
-    const contentType = event.headers['content-type'] || event.headers['Content-Type'];
-    console.log('Received Content-Type:', contentType);
+    if (!APPS_SCRIPT_URL) {
+      return {
+        statusCode: 500,
+        headers: { 'Access-Control-Allow-Origin': '*' },
+        body: JSON.stringify({ success: false, message: 'GOOGLE_APPS_SCRIPT_URL is not configured.' }),
+      };
+    }
 
+    const contentType = event.headers['content-type'] || event.headers['Content-Type'];
     if (!contentType || !contentType.includes('multipart/form-data')) {
-      console.error('Invalid Content-Type:', contentType);
       return {
         statusCode: 400,
         headers: { 'Access-Control-Allow-Origin': '*' },
@@ -52,97 +41,79 @@ export async function handler(event) {
     }
 
     const bodyBuffer = Buffer.from(event.body, 'base64');
-
-    // busboy v1 API: called as a function, file event info is an object
     const bb = busboy({ headers: { 'content-type': contentType } });
-    const fileIds = [];
-    const uploadPromises = [];
 
-    return new Promise((resolve, reject) => {
+    const files = [];
+    const fields = {};
+
+    return new Promise((resolve) => {
+      bb.on('field', (fieldname, value) => {
+        fields[fieldname] = value;
+      });
+
       bb.on('file', (fieldname, file, info) => {
         const { filename, mimeType } = info;
-        console.log(`Processing file: ${filename}`);
+        const chunks = [];
 
-        const uploadPromise = new Promise((res, rej) => {
-          const safeName = filename || `upload_${Date.now()}`;
-          const tempFilePath = join('/tmp', safeName);
-          const writeStream = createWriteStream(tempFilePath);
-
-          file.pipe(writeStream);
-
-          // Wait for the write stream to finish flushing before uploading
-          writeStream.on('finish', async () => {
-            try {
-              const fileMetadata = { name: safeName, parents: [FOLDER_ID] };
-              const media = { mimeType, body: createReadStream(tempFilePath) };
-
-              const response = await drive.files.create({
-                resource: fileMetadata,
-                media,
-                fields: 'id',
-              });
-
-              fileIds.push(response.data.id);
-              console.log(`Uploaded file ID: ${response.data.id}`);
-              unlinkSync(tempFilePath);
-              res();
-            } catch (error) {
-              console.error('Error during file upload:', error.message);
-              try { unlinkSync(tempFilePath); } catch (_) {}
-              rej(error);
-            }
-          });
-
-          writeStream.on('error', (error) => {
-            console.error('Write stream error:', error.message);
-            rej(error);
-          });
-
-          file.on('error', (error) => {
-            console.error('File stream error:', error.message);
-            rej(error);
+        file.on('data', (chunk) => chunks.push(chunk));
+        file.on('end', () => {
+          const buffer = Buffer.concat(chunks);
+          files.push({
+            name: filename || `upload_${Date.now()}`,
+            mimeType,
+            data: buffer.toString('base64'),
           });
         });
-
-        uploadPromises.push(uploadPromise);
+        file.on('error', (err) => {
+          console.error('File stream error:', err.message);
+        });
       });
 
       bb.on('finish', async () => {
         try {
-          await Promise.all(uploadPromises);
-          resolve({
-            statusCode: 200,
-            headers: { 'Access-Control-Allow-Origin': '*' },
-            body: JSON.stringify({
-              success: true,
-              message: 'Files uploaded successfully!',
-              fileIds,
-            }),
+          const payload = {
+            uploaderName: fields.uploaderName || 'Anonymous',
+            files,
+          };
+
+          const response = await fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
           });
-        } catch (error) {
-          console.error('Error completing upload:', error.message);
+
+          const result = await response.json();
+
+          if (result.success) {
+            resolve({
+              statusCode: 200,
+              headers: { 'Access-Control-Allow-Origin': '*' },
+              body: JSON.stringify({ success: true, message: 'Files uploaded successfully!', fileIds: result.fileIds }),
+            });
+          } else {
+            console.error('Apps Script error:', result.error);
+            resolve({
+              statusCode: 500,
+              headers: { 'Access-Control-Allow-Origin': '*' },
+              body: JSON.stringify({ success: false, message: 'File upload failed.', error: result.error }),
+            });
+          }
+        } catch (err) {
+          console.error('Error forwarding to Apps Script:', err.message);
           resolve({
             statusCode: 500,
             headers: { 'Access-Control-Allow-Origin': '*' },
-            body: JSON.stringify({
-              success: false,
-              message: 'File upload failed.',
-              error: error.message,
-            }),
+            body: JSON.stringify({ success: false, message: 'File upload failed.', error: err.message }),
           });
         }
       });
 
-      bb.on('error', (error) => {
-        console.error('Busboy error:', error.message);
+      bb.on('error', (err) => {
+        console.error('Busboy error:', err.message);
         resolve({
           statusCode: 500,
           headers: { 'Access-Control-Allow-Origin': '*' },
-          body: JSON.stringify({
-            success: false,
-            message: 'Error parsing upload.',
-            error: error.message,
-          }),
+          body: JSON.stringify({ success: false, message: 'Error parsing upload.', error: err.message }),
         });
       });
 
@@ -153,11 +124,7 @@ export async function handler(event) {
     return {
       statusCode: 500,
       headers: { 'Access-Control-Allow-Origin': '*' },
-      body: JSON.stringify({
-        success: false,
-        message: 'Unexpected server error.',
-        error: error.message,
-      }),
+      body: JSON.stringify({ success: false, message: 'Unexpected server error.', error: error.message }),
     };
   }
 }

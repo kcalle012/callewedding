@@ -7,6 +7,7 @@ import Button from './ui/Button';
 function UploadPhotos() {
   const [files, setFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
+  const [uploaderName, setUploaderName] = useState('');
   const [message, setMessage] = useState('');
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -105,10 +106,15 @@ function UploadPhotos() {
       setMessage('Please select at least one file to upload.');
       return;
     }
+    if (!uploaderName.trim()) {
+      setMessage('Please enter your name before uploading.');
+      return;
+    }
 
     setUploading(true);
     setMessage('');
     const formData = new FormData();
+    formData.append('uploaderName', uploaderName.trim());
     files.forEach((file) => formData.append('images', file));
 
     try {
@@ -148,6 +154,25 @@ function UploadPhotos() {
           <p className="text-lg text-apple-gray-600 max-w-2xl mx-auto">
             {siteConfig.uploadPhotos?.subtitle || 'Share your favorite moments from our special day!'}
           </p>
+        </div>
+
+        {/* Uploader name */}
+        <div className="max-w-md mx-auto mb-8">
+          <label
+            className="block text-sm tracking-widest uppercase text-gray-500 mb-2"
+            style={{ fontFamily: "'EB Garamond', Georgia, serif", letterSpacing: '0.12em' }}
+          >
+            Your Name
+          </label>
+          <input
+            type="text"
+            value={uploaderName}
+            onChange={(e) => setUploaderName(e.target.value)}
+            placeholder="e.g. Sarah & James"
+            className="w-full border border-gray-200 px-4 py-3 text-gray-800 focus:outline-none focus:border-gray-400 transition-colors"
+            style={{ fontFamily: "'EB Garamond', Georgia, serif", fontSize: '1rem' }}
+            disabled={uploading}
+          />
         </div>
 
         {/* Drag and Drop Area */}
