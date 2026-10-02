@@ -48,7 +48,7 @@ const routeMap = {
   timeline: { path: '/timeline', Component: Timeline },
 };
 
-const PASSWORD = process.env.REACT_APP_PASSWORD || 'k+g2027';
+const PASSWORD = process.env.REACT_APP_PASSWORD;
 
 function PasswordGate({ children }) {
   const [unlocked, setUnlocked] = useState(
