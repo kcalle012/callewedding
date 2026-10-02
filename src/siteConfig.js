@@ -161,8 +161,8 @@ const siteConfig = {
         time: "3:00 PM",
         venue: "St. Peter's Roman Catholic Church, Belleville, NJ.",
         mapEmbed: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3020.967421347689!2d-74.15939902319016!3d40.78473037138279!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c255b18fcb9b8b%3A0xf757c35e25d257f7!2sSt.%20Peter's%20Roman%20Catholic%20Church!5e0!3m2!1sen!2sus!4v1790794849929!5m2!1sen!2sus",
-        dressCode: "Semi-formal", // Optional
-        description: "Join us for our ", // Optional
+        dressCode: "Formal", // Optional
+        description: "Join us for our wedding mass and ceremony", // Optional
       },
       {
         id: 2,
@@ -171,7 +171,7 @@ const siteConfig = {
         time: "6:00 PM",
         venue: "Carlstadt, NJ",
         mapEmbed: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3018.518291226249!2d-74.08599782255672!3d40.83854327137484!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c2f8f0bdce229f%3A0xb2139c4ce89a991f!2sIl%20Villaggio!5e0!3m2!1sen!2sus!4v1790981825452!5m2!1sen!2sus",
-        dressCode: "Traditional", // Optional
+        dressCode: "Formal", // Optional
         description: "Main wedding reception", // Optional
         category: "wedding", // Optional
       },
