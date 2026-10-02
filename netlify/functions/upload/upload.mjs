@@ -1,7 +1,7 @@
 import { google } from 'googleapis';
 import { createWriteStream, unlinkSync, createReadStream } from 'fs';
 import { join } from 'path';
-import Busboy from 'busboy';
+import busboy from 'busboy';
 
 // Google Auth setup
 const auth = new google.auth.GoogleAuth({
@@ -11,7 +11,6 @@ const auth = new google.auth.GoogleAuth({
 
 const drive = google.drive({ version: 'v3', auth });
 
-// Get folder ID from environment variable
 const FOLDER_ID = process.env.GOOGLE_DRIVE_FOLDER_ID;
 
 if (!FOLDER_ID) {
@@ -52,25 +51,30 @@ export async function handler(event) {
       };
     }
 
-    const bodyBuffer = Buffer.from(event.body, 'base64'); // Lambda sends body as base64
-    const busboy = new Busboy({ headers: { 'content-type': contentType } });
+    const bodyBuffer = Buffer.from(event.body, 'base64');
+
+    // busboy v1 API: called as a function, file event info is an object
+    const bb = busboy({ headers: { 'content-type': contentType } });
     const fileIds = [];
     const uploadPromises = [];
 
     return new Promise((resolve, reject) => {
-      busboy.on('file', (fieldname, file, fileDetails, encoding, mimetype) => {
-        console.log(`Processing file: ${fileDetails.filename}`);
+      bb.on('file', (fieldname, file, info) => {
+        const { filename, mimeType } = info;
+        console.log(`Processing file: ${filename}`);
+
         const uploadPromise = new Promise((res, rej) => {
-          const filename = fileDetails.filename || `unknown_${Date.now()}`;
-          const tempFilePath = join('/tmp', filename);
+          const safeName = filename || `upload_${Date.now()}`;
+          const tempFilePath = join('/tmp', safeName);
           const writeStream = createWriteStream(tempFilePath);
 
           file.pipe(writeStream);
 
-          file.on('end', async () => {
+          // Wait for the write stream to finish flushing before uploading
+          writeStream.on('finish', async () => {
             try {
-              const fileMetadata = { name: filename, parents: [FOLDER_ID] };
-              const media = { mimeType: mimetype, body: createReadStream(tempFilePath) };
+              const fileMetadata = { name: safeName, parents: [FOLDER_ID] };
+              const media = { mimeType, body: createReadStream(tempFilePath) };
 
               const response = await drive.files.create({
                 resource: fileMetadata,
@@ -80,13 +84,18 @@ export async function handler(event) {
 
               fileIds.push(response.data.id);
               console.log(`Uploaded file ID: ${response.data.id}`);
-              unlinkSync(tempFilePath); // Clean up temporary file
+              unlinkSync(tempFilePath);
               res();
             } catch (error) {
               console.error('Error during file upload:', error.message);
-              unlinkSync(tempFilePath); // Clean up on error
+              try { unlinkSync(tempFilePath); } catch (_) {}
               rej(error);
             }
+          });
+
+          writeStream.on('error', (error) => {
+            console.error('Write stream error:', error.message);
+            rej(error);
           });
 
           file.on('error', (error) => {
@@ -98,7 +107,7 @@ export async function handler(event) {
         uploadPromises.push(uploadPromise);
       });
 
-      busboy.on('finish', async () => {
+      bb.on('finish', async () => {
         try {
           await Promise.all(uploadPromises);
           resolve({
@@ -112,7 +121,7 @@ export async function handler(event) {
           });
         } catch (error) {
           console.error('Error completing upload:', error.message);
-          reject({
+          resolve({
             statusCode: 500,
             headers: { 'Access-Control-Allow-Origin': '*' },
             body: JSON.stringify({
@@ -124,7 +133,20 @@ export async function handler(event) {
         }
       });
 
-      busboy.end(bodyBuffer);
+      bb.on('error', (error) => {
+        console.error('Busboy error:', error.message);
+        resolve({
+          statusCode: 500,
+          headers: { 'Access-Control-Allow-Origin': '*' },
+          body: JSON.stringify({
+            success: false,
+            message: 'Error parsing upload.',
+            error: error.message,
+          }),
+        });
+      });
+
+      bb.end(bodyBuffer);
     });
   } catch (error) {
     console.error('Unexpected server error:', error.message);
